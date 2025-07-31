@@ -1,0 +1,10 @@
+# py
+.venv/*
+__pycache__/*
+
+# data
+data/*.zip
+data/*.csv
+startup.py
+
+#
