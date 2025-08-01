@@ -8,7 +8,7 @@ import os
 import zipfile
 import requests
 import duckdb
-import constants
+import streamlit as st
 from pathlib import Path
 
 DATA_DIR = Path("data")
@@ -68,7 +68,7 @@ def create_duckdb_table():
     conn.execute(f"""
         CREATE OR REPLACE TABLE paysim AS
         SELECT *
-            , '{constants.datetime_base}'::TIMESTAMP + INTERVAL (step) HOUR as datetime
+            , '{st.secrets.constants.datetime_base}'::TIMESTAMP + INTERVAL (step) HOUR as datetime
             , hash( datetime || Type || nameOrig || nameDest || amount ) as tx_sk
         FROM paysim
     """)
