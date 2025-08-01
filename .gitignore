@@ -1,10 +1,9 @@
 # py
 .venv/*
 __pycache__/*
+*.lock
 
 # data
 data/*.zip
 data/*.csv
-startup.py
-
-#
+data/*.duckdb
