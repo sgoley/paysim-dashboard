@@ -20,9 +20,15 @@ def main():
         fraud_receivers_list = fraud_receivers_df['name'].tolist()
         
         with st.sidebar:
+            st.page_link('streamlit_app.py', label='Dashboard', icon='📊')
+            st.page_link('pages/1_tx_profile.py', label='Tx Profiling', icon='🔍')
+            st.page_link('pages/2_actors.py', label='Payment Network', icon='🛜')
+
+            st.divider()
+
             selected_actor = st.selectbox("Fraud Receivers", fraud_receivers_list)
         
-        st.title("Analyzing PaySim Actors")
+        st.title("🛜 Payment Network Graph")
         
         # Display selected actor information
         if selected_actor:
@@ -52,12 +58,12 @@ def main():
                     edge_attr=['datetime_str', 'amount', 'type', 'isFraud']
                 )
                 
-                # Create PyVis network
+                # Create PyVis network with theme-aligned colors
                 net = Network(
                     height='600px',
                     width='100%',
-                    bgcolor='#222222',
-                    font_color='white'
+                    bgcolor='#fdfdf8',  # Match theme backgroundColor
+                    font_color='#3d3a2a'  # Match theme textColor
                 )
                 
                 # Convert NetworkX to PyVis
@@ -81,8 +87,8 @@ def main():
                         
                     trans_data = filtered_trans.iloc[0]
                     
-                    # Color edge red for fraud, blue for normal
-                    edge['color'] = 'red' if trans_data['isFraud'] == 1 else 'blue'
+                    # Color edge with custom colors for fraud vs normal
+                    edge['color'] = '#BF4D43' if trans_data['isFraud'] == 1 else '#61AAF2'
                     edge['width'] = 3 if trans_data['isFraud'] == 1 else 1
                     
                     # Only add tooltip for fraudulent transactions
@@ -95,13 +101,13 @@ def main():
                         # No tooltip for normal transactions, just basic label
                         edge['label'] = f"${trans_data['amount']:,.0f}"
                 
-                # Customize node appearance
+                # Customize node appearance with theme colors
                 for node in net.nodes:
                     if node['id'] == selected_actor:
-                        node['color'] = 'orange'  # Highlight selected actor
+                        node['color'] = '#cb785c'  # Use theme primaryColor for selected actor
                         node['size'] = 30
                     else:
-                        node['color'] = 'lightblue'
+                        node['color'] = '#0ea5e9'  # Use first chartCategoricalColor for other nodes
                         node['size'] = 20
                 
                 # Set physics layout
