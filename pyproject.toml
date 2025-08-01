@@ -6,6 +6,10 @@ readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
     "duckdb>=1.3.2",
+    "networkx>=3.5",
+    "numerize>=0.12",
     "plotly>=6.2.0",
+    "pyvis>=0.3.2",
+    "pyvis-network>=0.0.6",
     "streamlit>=1.47.1",
 ]

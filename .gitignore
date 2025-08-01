@@ -7,3 +7,9 @@ __pycache__/*
 data/*.zip
 data/*.csv
 data/*.duckdb
+
+# streamlit
+lib/*
+
+# sensitive
+.streamlit/secrets.toml
