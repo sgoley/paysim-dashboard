@@ -9,6 +9,47 @@ from utils import get_duckdb_conn
 from charts import get_fraud_victims
 
 def main():
+    # Custom CSS to fix selectbox styling
+    st.markdown("""
+    <style>
+    .stSelectbox div[data-baseweb="select"] > div:first-child {
+        background-color: #ffffff !important;
+        border-color: #5848d5 !important;
+    }
+    
+    /* Target the dropdown container */
+    div[role="listbox"] {
+        background-color: #ffffff !important;
+    }
+    
+    div[role="listbox"] ul {
+        background-color: #ffffff !important;
+    }
+    
+    /* Target all dropdown list items */
+    div[role="listbox"] li {
+        background-color: #ffffff !important;
+    }
+    
+    /* Target dropdown options with more specific selectors */
+    div[data-baseweb="menu"] div[role="option"] {
+        background-color: #ffffff !important;
+    }
+    
+    div[data-baseweb="menu"] div[role="option"]:hover {
+        background-color: #f8f9fa !important;
+    }
+    
+    /* Additional targeting for select options */
+    .stSelectbox div[data-baseweb="select"] div[role="option"] {
+        background-color: #ffffff !important;
+    }
+    
+    div[role="listbox"] li:hover {
+        background-color: #f8f9fa !important;
+    }
+    </style>
+    """, unsafe_allow_html=True)
 
     duckdb_conn = get_duckdb_conn()
 
@@ -62,8 +103,8 @@ def main():
                 net = Network(
                     height='600px',
                     width='100%',
-                    bgcolor='#fdfdf8',  # Match theme backgroundColor
-                    font_color='#3d3a2a'  # Match theme textColor
+                    bgcolor='#ffffff',  # Match theme backgroundColor
+                    font_color='#0d0c52'  # Match theme textColor
                 )
                 
                 # Convert NetworkX to PyVis
@@ -88,7 +129,7 @@ def main():
                     trans_data = filtered_trans.iloc[0]
                     
                     # Color edge with custom colors for fraud vs normal
-                    edge['color'] = '#BF4D43' if trans_data['isFraud'] == 1 else '#61AAF2'
+                    edge['color'] = '#f77088' if trans_data['isFraud'] == 1 else '#05dde3'
                     edge['width'] = 3 if trans_data['isFraud'] == 1 else 1
                     
                     # Only add tooltip for fraudulent transactions
@@ -104,10 +145,10 @@ def main():
                 # Customize node appearance with theme colors
                 for node in net.nodes:
                     if node['id'] == selected_actor:
-                        node['color'] = '#cb785c'  # Use theme primaryColor for selected actor
+                        node['color'] = '#5848d5'  # Use theme primaryColor for selected actor
                         node['size'] = 30
                     else:
-                        node['color'] = '#0ea5e9'  # Use first chartCategoricalColor for other nodes
+                        node['color'] = '#21c7f9'  # Use second chartCategoricalColor for other nodes
                         node['size'] = 20
                 
                 # Set physics layout

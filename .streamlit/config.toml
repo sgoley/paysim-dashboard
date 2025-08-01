@@ -33,26 +33,26 @@ style = "normal"
 weight = 400
 
 [theme]
-primaryColor = "#cb785c"
-backgroundColor = "#fdfdf8"
-secondaryBackgroundColor = "#ecebe3"
-textColor = "#3d3a2a"
-linkColor = "#3d3a2a"
-borderColor = "#d3d2ca"
+primaryColor = "#5848d5"
+backgroundColor = "#ffffff"
+secondaryBackgroundColor = "#5848d5"
+textColor = "#0d0c52"
+linkColor = "#5848d5"
+borderColor = "#5848d5"
 showWidgetBorder = true
-baseRadius = "0.75rem"
+baseRadius = "1.00rem"
 buttonRadius = "full"
 font = "SpaceGrotesk"
 headingFontWeights = [600,500,500,500,500,500]
 headingFontSizes = ["3rem", "2rem"]
 codeFont = "SpaceMono"
 codeFontSize = ".75rem"
-codeBackgroundColor = "#ecebe4"
+codeBackgroundColor = "#3b3b3b"
 showSidebarBorder = true
-chartCategoricalColors = ["#0ea5e9", "#059669", "#fbbf24"]
+chartCategoricalColors = ["#05dde3", "#21c7f9", "#faeaa5"]
 
 [theme.sidebar]
-backgroundColor = "#f0f0ec"
-secondaryBackgroundColor = "#ecebe3"
+backgroundColor = "#ffffff"
+secondaryBackgroundColor = "#5848d5"
 headingFontSizes = ["1.6rem", "1.4rem", "1.2rem"]
-dataframeHeaderBackgroundColor = "#e4e4e0"
+dataframeHeaderBackgroundColor = "#3b3b3b"

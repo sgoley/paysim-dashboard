@@ -36,7 +36,7 @@ figbar = px.bar(
     x="datetime",
     y="dcount_tx", 
     color="isFraud",
-    color_discrete_map={'Normal': '#61AAF2', 'Fraud': '#BF4D43'}, 
+    color_discrete_map={'Normal': '#5848d5', 'Fraud': '#f77088'}, 
     barmode='group',
     labels={
         "datetime": "Transaction Date/Time",
@@ -55,14 +55,14 @@ figmedian = px.scatter(
     x="datetime",
     y="medianAmount", 
     color="isFraud",
-    color_discrete_map={'Normal': '#61AAF2', 'Fraud': '#BF4D43'},
+    color_discrete_map={'Normal': '#5848d5', 'Fraud': '#f77088'},
     labels={
         "datetime": "Transaction Date/Time",
         "amount": "Median Transaction Amount",
         "isFraud": "Fraud Status",
         "type": "Tx Type"
     },
-    title="Transaction Amounts Over Time (median)",
+    title="Transaction Counts Over Time (median)",
     facet_col="type",
     log_y=True
 )
@@ -75,14 +75,14 @@ figmean = px.scatter(
     x="datetime",
     y="meanAmount", 
     color="isFraud",
-    color_discrete_map={'Normal': '#61AAF2', 'Fraud': '#BF4D43'},
+    color_discrete_map={'Normal': '#5848d5', 'Fraud': '#f77088'},
     labels={
         "datetime": "Transaction Date/Time",
         "amount": "Mean Transaction Amount",
         "isFraud": "Fraud Status",
         "type": "Tx Type"
     },
-    title="Transaction Amounts Over Time (mean)",
+    title="Transaction $ Amounts Over Time (mean)",
     facet_col="type",
     log_y=True
 )
@@ -116,13 +116,13 @@ fighour = px.bar(
     y="dt_hour", 
     color="isFraud",
     facet_col="type",
-    color_discrete_map={'Normal': '#61AAF2', 'Fraud': '#BF4D43'},
+    color_discrete_map={'Normal': '#5848d5', 'Fraud': '#f77088'},
     labels={
         "dcount_tx": "Distinct Count Tx",
         "dt_hour": "Hour of Day",
         "isFraud": "Fraud Status"
     },
-    title="Transactions by Hour of Day (Red = Fraud, Blue = Normal)",
+    title="Transactions Counts by Hour of Day",
     orientation='h',
     log_x=True,
     barmode='stack'
@@ -136,13 +136,13 @@ figsum = px.bar(
     y="dt_hour", 
     color="isFraud",
     facet_col="type",
-    color_discrete_map={'Normal': '#61AAF2', 'Fraud': '#BF4D43'},
+    color_discrete_map={'Normal': '#5848d5', 'Fraud': '#f77088'},
     labels={
         "sumAmount": "Sum Tx $",
         "dt_hour": "Hour of Day",
         "isFraud": "Fraud Status"
     },
-    title="Transactions by Hour of Day (Red = Fraud, Blue = Normal)",
+    title="Transactions $ Amounts by Hour of Day",
     orientation='h',
     log_x=True,
     barmode='stack'
