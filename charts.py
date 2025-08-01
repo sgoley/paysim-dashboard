@@ -166,3 +166,30 @@ def get_fraud_victims(duckdb_conn):
     except Exception as e:
         print(f"Error in get_fraud_victims: {e}")
         return None
+
+# ------- balances query ----------
+
+def get_unequal_balances(duckdb_conn):
+    try:
+        unequal_balances = duckdb_conn.sql("""
+            SELECT 
+                datetime,
+                tx_sk,
+                type,
+                amount,
+                nameOrig,
+                nameDest,
+                -- oldbalanceOrg,
+                -- newbalanceOrig,
+                -- oldbalanceDest,
+                -- newbalanceDest,                
+                (oldbalanceOrg - amount) as postedBalOrig,
+                (oldbalanceDest + amount) as postedBalDest,
+            FROM paysim
+            WHERE isFraud = 1
+            ORDER BY amount desc
+        """).df()
+        return unequal_balances
+    except Exception as e:
+        print(f"Error in get_unequal_balances: {e}")
+        return None

@@ -64,6 +64,8 @@ def main():
             st.page_link('streamlit_app.py', label='Dashboard', icon='📊')
             st.page_link('pages/1_tx_profile.py', label='Tx Profiling', icon='🔍')
             st.page_link('pages/2_actors.py', label='Payment Network', icon='🛜')
+            st.page_link('pages/3_balances.py', label='Balances', icon='⚖️')
+
 
             st.divider()
 
