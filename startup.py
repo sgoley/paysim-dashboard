@@ -77,10 +77,12 @@ def create_duckdb_table():
     row_count = conn.execute("SELECT COUNT(*) FROM paysim").fetchone()[0]
     columns = conn.execute("DESCRIBE paysim").fetchall()
     head = conn.execute("select * from paysim limit 10").df()
+    dupes = conn.execute("select tx_sk, count(*) from paysim group by 1 having count(*) > 1").fetchone()[0]
     
     print(f"Created 'paysim' table with {row_count:,} rows and {len(columns)} columns")
     print("Columns:", [col[0] for col in columns])
     print(head)
+    print(dupes)
     
     conn.close()
     print(f"DuckDB database ready at {DB_FILE}")
