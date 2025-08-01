@@ -16,7 +16,7 @@ def get_agg_transactions(duckdb_conn):
             SELECT 
                 cast(datetime as date) as datetime,
                 type, 
-                isFraud,
+                CASE WHEN isFraud = 1 THEN 'Fraud' ELSE 'Normal' END as isFraud,
                 count(distinct tx_sk) as dcount_tx,
                 sum(amount) as sumAmount,
                 mean(amount) as meanAmount,
@@ -36,8 +36,8 @@ figbar = px.bar(
     x="datetime",
     y="dcount_tx", 
     color="isFraud",
-    # color_discrete_sequence=px.colors.qualitative.Alphabet,
-    color_discrete_map={"0": 'blue', "1": 'red'},
+    color_discrete_map={'Normal': '#61AAF2', 'Fraud': '#BF4D43'}, 
+    barmode='group',
     labels={
         "datetime": "Transaction Date/Time",
         "dcount_tx": "Count of Tx",
@@ -55,8 +55,7 @@ figmedian = px.scatter(
     x="datetime",
     y="medianAmount", 
     color="isFraud",
-    color_discrete_sequence=px.colors.qualitative.Alphabet,
-    color_discrete_map={"0": 'blue', "1": 'red'},
+    color_discrete_map={'Normal': '#61AAF2', 'Fraud': '#BF4D43'},
     labels={
         "datetime": "Transaction Date/Time",
         "amount": "Median Transaction Amount",
@@ -76,8 +75,7 @@ figmean = px.scatter(
     x="datetime",
     y="meanAmount", 
     color="isFraud",
-    color_discrete_sequence=px.colors.qualitative.Alphabet,
-    color_discrete_map={"0": 'blue', "1": 'red'},
+    color_discrete_map={'Normal': '#61AAF2', 'Fraud': '#BF4D43'},
     labels={
         "datetime": "Transaction Date/Time",
         "amount": "Mean Transaction Amount",
@@ -98,7 +96,7 @@ def get_agg_hourly(duckdb_conn):
             SELECT 
                 date_part('hour', datetime) as dt_hour,
                 type, 
-                isFraud,
+                CASE WHEN isFraud = 1 THEN 'Fraud' ELSE 'Normal' END as isFraud,
                 count(distinct tx_sk) as dcount_tx,
                 sum(amount) as sumAmount,
                 mean(amount) as meanAmount,
@@ -113,13 +111,12 @@ def get_agg_hourly(duckdb_conn):
 # ------- hourly chart ----------
 
 fighour = px.bar(
-    get_agg_hourly(duckdb_conn).sort_values('isFraud'),
+    get_agg_hourly(duckdb_conn).sort_values('type', ascending=True),
     x="dcount_tx",
     y="dt_hour", 
     color="isFraud",
     facet_col="type",
-    color_discrete_sequence=px.colors.qualitative.Alphabet,
-    color_discrete_map={"0": 'blue', "1": 'red'},
+    color_discrete_map={'Normal': '#61AAF2', 'Fraud': '#BF4D43'},
     labels={
         "dcount_tx": "Distinct Count Tx",
         "dt_hour": "Hour of Day",
@@ -127,6 +124,27 @@ fighour = px.bar(
     },
     title="Transactions by Hour of Day (Red = Fraud, Blue = Normal)",
     orientation='h',
+    log_x=True,
+    barmode='stack'
+)
+
+# ------- hourly sum chart ----------
+
+figsum = px.bar(
+    get_agg_hourly(duckdb_conn).sort_values('type', ascending=True),
+    x="sumAmount",
+    y="dt_hour", 
+    color="isFraud",
+    facet_col="type",
+    color_discrete_map={'Normal': '#61AAF2', 'Fraud': '#BF4D43'},
+    labels={
+        "sumAmount": "Sum Tx $",
+        "dt_hour": "Hour of Day",
+        "isFraud": "Fraud Status"
+    },
+    title="Transactions by Hour of Day (Red = Fraud, Blue = Normal)",
+    orientation='h',
+    log_x=True,
     barmode='stack'
 )
 
