@@ -14,6 +14,7 @@ def main():
         st.page_link('pages/1_tx_profile.py', label='Tx Profiling', icon='🔍')
         st.page_link('pages/2_actors.py', label='Payment Network', icon='🛜')
         st.page_link('pages/3_balances.py', label='Balances', icon='⚖️')
+        st.page_link('pages/4_waterfall.py', label='Waterfall', icon='🌊')
 
         st.divider()
 
@@ -35,7 +36,7 @@ def main():
         st.metric(label="\# Trx", value=numerize(num_trx))
 
     with col2:
-        num_trx = duckdb_conn.sql("select sum(amount) from paysim").fetchone()[0]
+        num_trx = duckdb_conn.sql("select sum(abs_amount) from paysim").fetchone()[0]
         st.metric(label="$ Trx", value=numerize(num_trx))
 
     with col3:
@@ -51,7 +52,7 @@ def main():
         st.metric(label="\# Flagged Trx", value=numerize(num_fraud_trx))
 
     with col6:
-        sum_fraud_amount = duckdb_conn.sql("select sum(amount) from paysim where isFraud = 1").fetchone()[0]
+        sum_fraud_amount = duckdb_conn.sql("select sum(abs_amount) from paysim where isFraud = 1").fetchone()[0]
         st.metric(label="$ Flagged Trx", value=f"${numerize(sum_fraud_amount)}")
 
     st.divider()

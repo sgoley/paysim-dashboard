@@ -18,9 +18,9 @@ def get_agg_transactions(duckdb_conn):
                 type, 
                 CASE WHEN isFraud = 1 THEN 'Fraud' ELSE 'Normal' END as isFraud,
                 count(distinct tx_sk) as dcount_tx,
-                sum(amount) as sumAmount,
-                mean(amount) as meanAmount,
-                median(amount) as medianAmount                 
+                sum(abs_amount) as sumAmount,
+                mean(abs_amount) as meanAmount,
+                median(abs_amount) as medianAmount                 
             FROM paysim
             group by all
             order by 1
@@ -98,9 +98,9 @@ def get_agg_hourly(duckdb_conn):
                 type, 
                 CASE WHEN isFraud = 1 THEN 'Fraud' ELSE 'Normal' END as isFraud,
                 count(distinct tx_sk) as dcount_tx,
-                sum(amount) as sumAmount,
-                mean(amount) as meanAmount,
-                median(amount) as medianAmount                 
+                sum(abs_amount) as sumAmount,
+                mean(abs_amount) as meanAmount,
+                median(abs_amount) as medianAmount                 
             FROM paysim
             group by all
         """).df()
@@ -177,9 +177,10 @@ def get_unequal_balances(duckdb_conn):
                 tx_sk,
                 type,
                 amount,
+                abs_amount,
 
                 nameOrig,
-                post_balance_orig
+                post_balance_orig,
                 amount_orig,
 
                 nameDest,
@@ -187,6 +188,7 @@ def get_unequal_balances(duckdb_conn):
                 post_balance_dest                
             FROM paysim
             where isFraud = 1
+            order by abs_amount desc, datetime asc
         """).df()
         return unequal_balances
     except Exception as e:
@@ -199,11 +201,64 @@ def get_orig_balance_trust(duckdb_conn):
     try:
         orig_balance_trust = duckdb_conn.sql("""
             SELECT 
-                count( distinct nameOrig) as dcount_nameorig,
-                sum( if(trust_orig_balance, 1, 0)) as sum_trust_orig
+                trust_orig_balance,
+                COUNT(*) as count
             FROM paysim
+            GROUP BY trust_orig_balance
         """).df()
         return orig_balance_trust
     except Exception as e:
         print(f"Error in get_orig_balance_trust: {e}")
         return None
+
+def get_dest_balance_trust(duckdb_conn):
+    try:
+        dest_balance_trust = duckdb_conn.sql("""
+            SELECT 
+                trust_dest_balance,
+                COUNT(*) as count
+            FROM paysim
+            GROUP BY trust_dest_balance
+        """).df()
+        return dest_balance_trust
+    except Exception as e:
+        print(f"Error in get_dest_balance_trust: {e}")
+        return None
+
+def create_trust_pie_chart(trust_data, title, trust_column):
+    """Create a pie chart showing trust vs untrust proportions"""
+    if trust_data is not None and not trust_data.empty:
+        # Calculate percentages
+        total = trust_data['count'].sum()
+        trust_data['percentage'] = (trust_data['count'] / total * 100).round(1)
+        
+        # Create labels with percentages
+        labels = []
+        values = []
+        colors = []
+        
+        for _, row in trust_data.iterrows():
+            if row[trust_column]:
+                labels.append(f"Trusted ({row['percentage']}%)")
+                colors.append('#05dde3')  # Light blue for trusted
+            else:
+                labels.append(f"Untrusted ({row['percentage']}%)")
+                colors.append('#f77088')  # Red for untrusted
+            values.append(row['count'])
+        
+        fig = go.Figure(data=[go.Pie(
+            labels=labels,
+            values=values,
+            marker_colors=colors,
+            textinfo='label+percent',
+            textposition='auto'
+        )])
+        
+        fig.update_layout(
+            title=title,
+            showlegend=True,
+            height=400
+        )
+        
+        return fig
+    return None
