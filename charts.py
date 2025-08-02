@@ -177,19 +177,33 @@ def get_unequal_balances(duckdb_conn):
                 tx_sk,
                 type,
                 amount,
+
                 nameOrig,
+                post_balance_orig
+                amount_orig,
+
                 nameDest,
-                -- oldbalanceOrg,
-                -- newbalanceOrig,
-                -- oldbalanceDest,
-                -- newbalanceDest,                
-                (oldbalanceOrg - amount) as postedBalOrig,
-                (oldbalanceDest + amount) as postedBalDest,
+                amount_dest,
+                post_balance_dest                
             FROM paysim
-            WHERE isFraud = 1
-            ORDER BY amount desc
+            where isFraud = 1
         """).df()
         return unequal_balances
     except Exception as e:
         print(f"Error in get_unequal_balances: {e}")
+        return None
+
+# ------- trusted balances query ----------
+
+def get_orig_balance_trust(duckdb_conn):
+    try:
+        orig_balance_trust = duckdb_conn.sql("""
+            SELECT 
+                count( distinct nameOrig) as dcount_nameorig,
+                sum( if(trust_orig_balance, 1, 0)) as sum_trust_orig
+            FROM paysim
+        """).df()
+        return orig_balance_trust
+    except Exception as e:
+        print(f"Error in get_orig_balance_trust: {e}")
         return None

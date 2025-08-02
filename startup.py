@@ -67,9 +67,30 @@ def create_duckdb_table():
     # create datetime as first column
     conn.execute(f"""
         CREATE OR REPLACE TABLE paysim AS
-        SELECT *
-            , '{st.secrets.constants.datetime_base}'::TIMESTAMP + INTERVAL (step) HOUR as datetime
+        SELECT 
+            '{st.secrets.constants.datetime_base}'::TIMESTAMP + INTERVAL (step) HOUR as datetime
             , hash( datetime || Type || nameOrig || nameDest || amount ) as tx_sk
+            , step
+            , type
+            , amount as abs_amount
+            , if(type='TRANSFER' or type='CASH_OUT' or type='PAYMENT', -1*abs_amount, abs_amount) as amount
+            , amount as amount_orig
+            , amount_orig * -1 as amount_dest
+
+            , nameOrig
+            , oldbalanceOrg as old_balance_orig
+            , newbalanceOrig as new_balance_orig
+            , (oldbalanceOrg + amount_orig) as post_balance_orig
+            , if( (oldbalanceOrg + amount_orig) = new_balance_orig , true, false)  as trust_orig_balance
+
+            , nameDest
+            , oldbalanceDest as old_balance_dest
+            , newbalanceDest as new_balance_dest
+            , (oldbalanceDest + amount_dest) as post_balance_dest
+            , if( (oldbalanceDest + amount_dest) = new_balance_dest, true, false) as trust_dest_balance
+
+            , isFraud
+            , isFlaggedFraud
         FROM paysim
     """)
     
@@ -77,7 +98,7 @@ def create_duckdb_table():
     row_count = conn.execute("SELECT COUNT(*) FROM paysim").fetchone()[0]
     columns = conn.execute("DESCRIBE paysim").fetchall()
     head = conn.execute("select * from paysim limit 10").df()
-    dupes = conn.execute("select tx_sk, count(*) from paysim group by 1 having count(*) > 1").fetchone()[0]
+    dupes = conn.execute("select tx_sk, count(*) from paysim group by 1 having count(*) > 1").fetchone()
     
     print(f"Created 'paysim' table with {row_count:,} rows and {len(columns)} columns")
     print("Columns:", [col[0] for col in columns])

@@ -13,6 +13,7 @@ def main():
         st.page_link('pages/1_tx_profile.py', label='Tx Profiling', icon='🔍')
         st.page_link('pages/2_actors.py', label='Payment Network', icon='🛜')
         st.page_link('pages/3_balances.py', label='Balances', icon='⚖️')
+        st.page_link('pages/4_waterfall.py', label='Waterfall', icon='🌊')
 
 
     st.title("🔍 Tx Profiling")
