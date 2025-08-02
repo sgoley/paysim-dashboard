@@ -142,6 +142,8 @@ marp: true
   * A `TRANSFER` operation takes place to a destination account
   * One or more `CASH_OUT` transactions take place from the destination. (Hallmark layering)
 
+-------
+
 ## Additional Context
 
 * Would be helpful to get account classification between personal individual vs business,  operational omnibus etc.
