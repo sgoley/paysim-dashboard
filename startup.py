@@ -73,9 +73,9 @@ def create_duckdb_table():
             , step
             , type
             , amount as abs_amount
-            , if(type='TRANSFER' or type='CASH_OUT' or type='PAYMENT', -1*abs_amount, abs_amount) as amount
+            , if(type='TRANSFER' or type='CASH_OUT' or type='PAYMENT', abs_amount, -1*abs_amount) as amount
             , amount as amount_orig
-            , amount_orig * -1 as amount_dest
+            , amount as amount_dest
 
             , nameOrig
             , oldbalanceOrg as old_balance_orig
