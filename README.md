@@ -1,6 +1,7 @@
 # PaySim Synthetic Financial Datasets For Fraud Detection
 
 This is a streamlit based dashboard for the following dataset:
+
 Source link: [Synthetic Financial Datasets For Fraud Detection](https://www.kaggle.com/datasets/ealaxi/paysim1/data)
 
 To launch the project, you can take the following steps:
@@ -14,13 +15,13 @@ To launch the project, you can take the following steps:
 7. `python startup.py`
 8. `streamlit run streamlit_app.py`
 
-
-### Required files:
+## Required files
 
 > [!NOTE]
 > `url` value in `secrets.toml` is only required if you intend to connect to a remotely hosted duckdb file.
 
 `.streamlit/secrets.toml`
+
 ``` toml
 [constants]
 url=""
