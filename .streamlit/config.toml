@@ -53,6 +53,6 @@ chartCategoricalColors = ["#05dde3", "#21c7f9", "#faeaa5"]
 
 [theme.sidebar]
 backgroundColor = "#ffffff"
-secondaryBackgroundColor = "#5848d5"
+secondaryBackgroundColor = "#ffffff"
 headingFontSizes = ["1.6rem", "1.4rem", "1.2rem"]
 dataframeHeaderBackgroundColor = "#3b3b3b"
