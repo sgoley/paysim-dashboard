@@ -15,6 +15,10 @@ def main():
         st.page_link('pages/2_actors.py', label='Payment Network', icon='🛜')
         st.page_link('pages/3_balances.py', label='Balances', icon='⚖️')
 
+        st.divider()
+
+        preview_select = st.selectbox('Table Preview', ['Top 100', 'Latest 100', '20 Each Type', '100 Fraud'])
+
 
     st.title(f'📊 Dashboard')
 
@@ -56,10 +60,43 @@ def main():
 
     st.divider()
 
-    st.subheader("Latest 100 transactions")
+    st.subheader("Transaction Preview")
 
-    top100 = duckdb_conn.sql("select * from paysim order by datetime desc limit 100").df()
-    top100
+    # Execute different queries based on selectbox selection
+    if preview_select == 'Top 100':
+        preview_df = duckdb_conn.sql("""
+            SELECT * FROM paysim 
+            ORDER BY ABS(amount) DESC 
+            LIMIT 100
+        """).df()
+    elif preview_select == 'Latest 100':
+        preview_df = duckdb_conn.sql("""
+            SELECT * FROM paysim 
+            ORDER BY datetime DESC 
+            LIMIT 100
+        """).df()
+    elif preview_select == '20 Each Type':
+        preview_df = duckdb_conn.sql("""
+            SELECT * FROM (
+                SELECT *, ROW_NUMBER() OVER (PARTITION BY type ORDER BY RANDOM()) as rn
+                FROM paysim
+            ) t
+            WHERE rn <= 20
+            ORDER BY type, rn
+        """).df()
+    elif preview_select == '100 Fraud':
+        preview_df = duckdb_conn.sql("""
+            SELECT * FROM (
+                SELECT *, ROW_NUMBER() OVER (PARTITION BY type ORDER BY RANDOM()) as rn
+                FROM paysim
+            ) t
+            WHERE isFraud = 1
+            ORDER BY type, rn
+        """).df()
+    else:
+        preview_df = duckdb_conn.sql("SELECT * FROM paysim LIMIT 100").df()
+    
+    st.dataframe(preview_df, use_container_width=True)
     
 if __name__ == "__main__":
     main()
